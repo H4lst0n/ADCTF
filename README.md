@@ -108,7 +108,8 @@ Chúng ta sẽ tiến hành build theo cách sau:
     
 Cùng tiến hành phân tích để hiểu rõ về file `yml` này.
   
-- Phần `Game`.
+Phần `Game`.
+
   ```
   game:
   mode: classic
@@ -131,6 +132,7 @@ Các Tham số:
   - inflation: Tùy chọn để kích hoạt lạm phát điểm số, ở đây là true.
 
 Phần Tasks (Nhiệm vụ hoặc Dịch vụ)
+
   ```
   tasks:
   - checker: 5Go/checker.py
@@ -188,6 +190,7 @@ Mỗi task đại diện cho một dịch vụ mà các đội phải bảo vệ
 
 
 Phần Teams (Các đội tham gia)
+
   ```
   teams:
     - ip: 10.80.0.2
@@ -228,7 +231,7 @@ File YML này cung cấp tất cả các thông tin cần thiết để cấu h�
 
 ##### Docker and library
 
-- Tiến hành cài đặt các thư viện bằng dòng lệnh  `pip3 install -r cli/requirements.txt`.
+Tiến hành cài đặt các thư viện bằng dòng lệnh  `pip3 install -r cli/requirements.txt`.
 - Các thư viện sau sẽ được cài đặt.
   ```
   click==8.1.7
@@ -238,18 +241,19 @@ File YML này cung cấp tất cả các thông tin cần thiết để cấu h�
   
     ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/ffcdad3c-307f-4b83-82b9-5a03afb986d6)
 
-- Docker
+Docker
   - Tại đây chúng ta sẽ phải cài phiên bản docker sát với phiên bản của ForcAD.
     
       ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/54007db5-9e93-4c3a-8919-0af6f3fb2fb0)
     
-  - Tham khảo tại các link sau để tải các phiên bản docker phù hợp với phiên bản ForcAD.
+Tham khảo tại các link sau để tải các phiên bản docker phù hợp với phiên bản ForcAD.
   - `https://docs.docker.com/engine/install/ubuntu/`
   - `https://docs.docker.com/compose/install/standalone/` 
   - `https://github.com/docker/compose/releases/tag/v2.2.3`
     
-  #### Bước 2: Khởi chạy hệ thống.
-- Chạy file `./control.py setup` để chuẩn bị cho ForcAD config. Tại đây nó sẽ tạo 1 mk và 1 tài khoản nếu mà mình không cung cấp tài khoản `admin` và mật khẩu trong file `config.yml` nó sẽ gen ra 1 tài khoản và mật khẩu cho admin để control các services hay các team cũng như là các ip của bxh.
+#### Bước 2: Khởi chạy hệ thống.
+##### Control.py
+Chạy file `./control.py setup` để chuẩn bị cho ForcAD config. Tại đây nó sẽ tạo 1 mk và 1 tài khoản nếu mà mình không cung cấp tài khoản `admin` và mật khẩu trong file `config.yml` nó sẽ gen ra 1 tài khoản và mật khẩu cho admin để control các services hay các team cũng như là các ip của bxh.
 - Phân tích fie `control.py`
   (KienViet)
 
@@ -258,7 +262,7 @@ File YML này cung cấp tất cả các thông tin cần thiết để cấu h�
     ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/061922e0-5bdd-4775-a050-035464bd846e)
 
 #### Bước 3: Setup hệ thống.
-- Sau khi đã cài đặt thành công hệ thống của chúng ta đã được dựng lên.
+Sau khi đã cài đặt thành công hệ thống của chúng ta đã được dựng lên.
 - Các port đã được mở ra mặc định bxh là `http://103.197.185.208/` với admin nó sẽ ở `http://103.197.185.208/admin`
   
     ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/66f0547b-495b-464e-aa84-7de8475a7894)
