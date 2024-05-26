@@ -3,14 +3,14 @@
 
 ## 1. Giới thiệu chung
 
-- Attack-Defend CTF là một dạng cuộc thi bảo mật thông tin, nơi các đội không chỉ phải bảo vệ hệ thống của mình mà còn phải tấn công hệ thống của các đội khác. ForcAD hỗ trợ quản lý và điều hành các cuộc thi dạng này một cách hiệu quả, cung cấp môi trường để người tham gia có thể học hỏi và thực hành các kỹ năng bảo mật.
+Attack-Defend CTF là một dạng cuộc thi bảo mật thông tin, nơi các đội không chỉ phải bảo vệ hệ thống của mình mà còn phải tấn công hệ thống của các đội khác. ForcAD hỗ trợ quản lý và điều hành các cuộc thi dạng này một cách hiệu quả, cung cấp môi trường để người tham gia có thể học hỏi và thực hành các kỹ năng bảo mật.
 
-- Cài đặt và Thiết lập.
-  - Yêu cầu hệ thống:
-    - Python 3.8 trở lên
-    - Docker và Docker Compose 
+Cài đặt và Thiết lập.
+- Yêu cầu hệ thống:
+  - Python 3.8 trở lên
+  - Docker và Docker Compose 
 
-- Mô hình ở đây chúng ta sẽ chia làm 2 phần:
+Mô hình ở đây chúng ta sẽ chia làm 2 phần:
   - Phần đầu sẽ là về "Services" có tác dụng đùng để build các challenges và checker.
   - Phần thứ hai sẽ là về "ForcAD" sử dụng để build ra bxh và hiển thị các team, các challenges cùng với ip các đội thi.
  
