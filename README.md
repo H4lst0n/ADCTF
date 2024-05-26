@@ -106,3 +106,13 @@
     ```
     
   - Cùng tiến hành phân tích nó. 
+(KienViet)
+
+- Tiến hành cài đặt các thư viện bằng dòng lệnh  `pip3 install -r cli/requirements.txt`.
+- Các thư viện sau sẽ được cài đặt.
+  ```
+  click==8.1.7
+  pydantic==2.4.2
+  PyYAML==6.0.1
+  ```
+    ![Uploading image.png…]()
