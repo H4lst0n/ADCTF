@@ -928,12 +928,9 @@ Phần main sẽ khởi tạo checker và thực hiện hành động dựa trê
 File checker.py này được viết để kiểm tra dịch vụ thông qua các hành động đặt và lấy Flag, đồng thời kiểm tra tính toàn vẹn của dữ liệu. Việc tổ chức và cấu hình checker theo hướng dẫn sẽ đảm bảo dịch vụ hoạt động đúng và phát hiện sớm các lỗi tiềm ẩn.
 
 
-## 3. Build Services
+## 4. Build Services
 
 Đây là các services chúng ta sẽ build và khởi chạy nó trên server. Chúng ta sẽ dựa trên github `https://github.com/C4T-BuT-S4D/stay-home-ctf-2022/tree/master`.
-<br>
-<br>
-<br>
 <br>
 <br>
 <br>
