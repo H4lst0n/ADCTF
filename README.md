@@ -279,7 +279,7 @@ Sau khi đã cài đặt thành công hệ thống của chúng ta đã được
 ## 3. Build Services
 
 
-Đây là các services chúng ta sẽ build và khởi chạy nó trên server.
+Đây là các services chúng ta sẽ build và khởi chạy nó trên server. Chúng ta sẽ dựa trên github `https://github.com/C4T-BuT-S4D/stay-home-ctf-2022/tree/master`.
 
 
 | Service | Language | Checker | Sploits | Authors |
