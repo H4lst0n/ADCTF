@@ -947,5 +947,5 @@ File checker.py này được viết để kiểm tra dịch vụ thông qua cá
 | **[vacc_ex](services/vacc_ex/)** | Java | [Checker](checkers/vacc_ex/) | [Sploits](sploits/vacc_ex/) | [@jnovikov](https://github.com/jnovikov) & [@iwalainz](https://github.com/iwalainz) |
 | **[virush](services/virush/)** | Bash | [Checker](checkers/virush/) | [Sploits](sploits/virush/) | [@keltecc](https://github.com/keltecc) |
 
-`Hiện tại chúng em vẫn đang bị lỗi tại đây và không thể tiến hành xây dựng tiếp được.`
+
 
