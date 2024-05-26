@@ -937,7 +937,7 @@ Phần main sẽ khởi tạo checker và thực hiện hành động dựa trê
 
 File checker.py này được viết để kiểm tra dịch vụ thông qua các hành động đặt và lấy Flag, đồng thời kiểm tra tính toàn vẹn của dữ liệu. Việc tổ chức và cấu hình checker theo hướng dẫn sẽ đảm bảo dịch vụ hoạt động đúng và phát hiện sớm các lỗi tiềm ẩn.
 
-### 3.3 Tìm hiểu Backend
+### 3.3. Tìm hiểu Backend
 Để hiểu sâu hơn về phần backend chúng ta sẽ đi đến file `requirements.txt` đây là nơi chứa tất cả module cần thiết trong dự án. Để thực hiện cài đặt module ta thực hiện câu lệnh `pip install -r requirements.txt`:
 ![image](https://github.com/H4lst0n/ADCTF/assets/97662987/9d9a4d57-9e37-42b4-b391-f6e519222d39)
 
