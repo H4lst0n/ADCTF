@@ -443,3 +443,210 @@ Kết Luận
 
 
 Các tệp này kết hợp với nhau để tạo ra một hệ thống quản lý cấu hình mạnh mẽ và dễ dàng sử dụng thông qua CLI. Sự phân tách rõ ràng giữa các thành phần giúp mã dễ bảo trì và mở rộng, đồng thời giúp các thao tác hệ thống trở nên an toàn và hiệu quả hơn.
+
+# 2. Checker Bot
+
+## 2.1. Cấu hình
+
+Checksystem hoàn toàn tương thích với các checkers của Hackerdom, nhưng đã bổ sung một số cải tiến ở mức cấu hình. Các checkers được cấu hình riêng cho từng task. Nên đặt mỗi checker vào một thư mục riêng trong thư mục checkers ở thư mục gốc của dự án. Checker được xem là bao gồm tệp thực thi chính và một số tệp phụ trợ trong cùng một thư mục.
+
+Các tùy chọn sau đây được hỗ trợ:
+
+- name (bắt buộc): tên của dịch vụ hiển thị trên bảng điểm.
+- checker (bắt buộc): đường dẫn tới tệp thực thi checker (tương đối với thư mục checkers), cần phải có quyền đọc và thực thi cho mọi người (chạy chmod o+rx checker_executable), vì checkers được chạy với người dùng nobody. Thông thường là <service_name>/checker.py.
+- checker_timeout (bắt buộc): thời gian chờ (timeout) tính bằng giây cho mỗi hành động của checker. Vì ít nhất có 3 hành động được chạy (tùy thuộc vào puts và gets), nên khuyến nghị đặt round_time ít nhất gấp 4 lần giá trị checker_timeout lớn nhất nếu có thể.
+- puts (tùy chọn, mặc định 1): số lượng cờ cần đặt cho mỗi đội trong mỗi vòng.
+- gets (tùy chọn, mặc định 1): số lượng cờ cần kiểm tra từ các vòng có thời gian sống của cờ (flag_lifetime) cuối cùng.
+- places (tùy chọn, mặc định 1): các nhiệm vụ lớn có thể chứa nhiều vị trí có thể đặt cờ, đó là số lượng. Nó được ngẫu nhiên hóa cho mỗi lần đặt trong khoảng [1, places] và được truyền vào các hành động PUT và GET của checker.
+- checker_type (tùy chọn, mặc định hackerdom): một tùy chọn chứa các tag ngăn cách bởi dấu gạch dưới (các tag thiếu sẽ bị bỏ qua). Các ví dụ: hackerdom (tag hackerdom bị bỏ qua, vì vậy không có tag sửa đổi nào được áp dụng), pfr (checker với dữ liệu cờ công khai được trả về). Các tag hiện được hỗ trợ là:
+    - pfr: checker trả về dữ liệu cờ công khai (ví dụ: tên người dùng của cờ) từ hành động PUT như một thông báo công khai, dữ liệu cờ riêng (flag_id) như một thông báo riêng tư, và thông báo công khai được hiển thị trên /api/client/attack_data cho người tham gia. Nếu checker không có tag này, không có dữ liệu tấn công nào được hiển thị cho nhiệm vụ.
+    - nfr: flag_id được truyền vào PUT cũng được truyền vào GET cùng cờ đó. Bằng cách đó, flag_id được sử dụng để gieo hạt cho bộ sinh số ngẫu nhiên trong các checkers để nó trả về cùng các giá trị cho GET và PUT. Các checkers hỗ trợ tùy chọn này khá hiếm (và cũ), vì vậy không sử dụng nó trừ khi bạn chắc chắn.
+   
+Giải thích chi tiết về các tag của checker có thể được tìm thấy trong vấn đề này.
+- env_path (tùy chọn): đường dẫn hoặc kết hợp các đường dẫn được thêm vào biến môi trường PATH (ví dụ: đường dẫn tới chromedriver).
+
+## 2.2. Thư mục Checkers
+Thư mục checkers ở thư mục gốc của dự án (chứa tất cả các thư mục checker) được khuyến nghị có cấu trúc như sau:
+
+    ```
+    checkers:
+      - requirements.txt  <-- yêu cầu tự động cài đặt (bằng pip) yêu cầu kết hợp của tất cả các checkers (phải có)
+      - task1:
+          - checker.py  <-- tệp thực thi (o+rx)
+      - task2:
+          - checker.py  <-- tệp thực thi (o+rx)
+    ```
+
+
+## 2.3. Cấu trúc một Checker cơ bản ( dựa trên 1 challenges trong services để phân tích vì file checker này sẽ được sửa dụng ở cả 2 bên là services và forcad)
+Cấu trúc thư mục Checker
+
+Thư mục checkers trong thư mục gốc của dự án chứa các thư mục riêng lẻ cho mỗi dịch vụ và tệp requirements.txt chung:
+```
+checkers/
+  ├── requirements.txt  <-- yêu cầu tự động cài đặt (bằng pip) yêu cầu kết hợp của tất cả các checkers (phải có)
+  ├── example_service/
+  │   └── checker.py    <-- tệp thực thi (o+rx)
+```
+
+Đây là nội dung của checker.py trong challenges chúng ta sẽ sử dụng để phân tích `https://github.com/C4T-BuT-S4D/stay-home-ctf-2022/blob/master/checkers/5Go/checker.py`.
+```
+#!/usr/bin/env python3
+
+import random
+import re
+import string
+from collections import defaultdict
+
+import google.protobuf.message
+import grpc
+import sys
+from checklib import *
+
+from client import Daeh5
+
+PORT = 5005
+
+
+class Checker(BaseChecker):
+    vulns: int = 1
+    timeout: int = 20
+    uses_attack_data: bool = True
+
+    def __init__(self, *args, **kwargs):
+        super(Checker, self).__init__(*args, **kwargs)
+        self.d = Daeh5(f'{self.host}:{PORT}')
+
+    def action(self, action, *args, **kwargs):
+        try:
+            super(Checker, self).action(action, *args, **kwargs)
+        except grpc.RpcError as e:
+            if e.code() == grpc.StatusCode.UNAVAILABLE:
+                self.cquit(Status.DOWN, 'Connection error', f'Got grpc error {e.code()}: {e.details()}')
+            else:
+                self.cquit(Status.MUMBLE, 'Unexpected grpc error', f'Got grpc error {e.code()}: {e.details()}')
+        except google.protobuf.message.DecodeError as e:
+            self.cquit(Status.MUMBLE, 'Protobuf parsing error', f'Got error parsing protobuf: {e}')
+
+    def check(self):
+        self.d.ping()
+        with self.d.session() as session1:
+            created = defaultdict(list)
+            users = [rnd_username(32) for _ in range(random.randint(2, 3))]
+            users += [rnd_string(i) for i in range(5, 10, 2)]
+            users = random.sample(users, 5)
+            for _ in range(random.randint(10, 20)):
+                user = random.choice(users)
+                content = rnd_string(random.randint(24, 348), alphabet=string.printable)
+                name = rnd_string(random.choice((7, 8, 10, 11, 13, 14)))
+                doc = session1.add_document(user, content, name)
+                self.check_doc_id(doc.id, name)
+                real_doc = session1.get_document(doc.id)
+                self.assert_docs_equal(doc, real_doc)
+                created[user].append(doc)
+
+            with self.d.session() as session2:
+                check_session = random.choice([session1, session2])
+                random.shuffle(users)
+                for user in users:
+                    lst = check_session.list_documents(user)
+                    self.assert_gte(len(lst), len(created[user]), 'Invalid number of documents for user')
+                    for x, y in zip(lst, created[user]):
+                        self.assert_docs_equal(x, y)
+
+            with self.d.session() as session3:
+                check_session = random.choice([session1, session3])
+                random.shuffle(users)
+                for user in users:
+                    lst = check_session.list_documents(user)
+                    self.assert_gte(len(lst), len(created[user]), 'Invalid number of documents for user')
+                    for x, y in zip(lst, created[user]):
+                        self.assert_docs_equal(x, y)
+                random.shuffle(users)
+                for user, docs in created.items():
+                    random.shuffle(docs)
+                    for doc in docs:
+                        if random.randint(0, 2) == 0:
+                            real_doc = check_session.get_document(doc.id)
+                            self.assert_docs_equal(doc, real_doc)
+
+        self.cquit(Status.OK)
+
+    def put(self, flag_id, flag, vuln):
+        user = rnd_username(32)
+        part1 = rnd_string(random.randint(12, 150), alphabet=string.printable)
+        part2 = rnd_string(random.randint(12, 150), alphabet=string.printable)
+        content = f'{part1} {flag} {part2}'
+        name = rnd_string(10)
+        with self.d.session() as session:
+            doc = session.add_document(user, content, name)
+        self.check_doc_id(doc.id, name)
+        self.cquit(Status.OK, name, f'{user}:{doc.id}')
+
+    def get(self, flag_id, flag, vuln):
+        user, doc_id = flag_id.split(':')
+        with self.d.session() as session:
+            doc = session.get_document(doc_id)
+            self.assert_eq(doc.user, user, 'Invalid document returned', status=Status.CORRUPT)
+            self.assert_eq(doc.id, doc_id, 'Invalid document returned', status=Status.CORRUPT)
+            self.assert_in(flag, doc.content, 'Invalid document returned', status=Status.CORRUPT)
+
+        with self.d.session() as session:
+            docs = session.list_documents(user)
+            self.assert_gte(len(docs), 1, 'Invalid document listing', status=Status.CORRUPT)
+
+            doc = docs[0]
+            self.assert_eq(doc.user, user, 'Invalid document returned', status=Status.CORRUPT)
+            self.assert_eq(doc.id, doc_id, 'Invalid document returned', status=Status.CORRUPT)
+            self.assert_in(flag, doc.content, 'Invalid document returned', status=Status.CORRUPT)
+
+        self.cquit(Status.OK)
+
+    def check_doc_id(self, doc_id, name, st=Status.MUMBLE):
+        pattern = re.compile(rf"^{name}-[0-9a-f]{{8}}-[0-9a-f]{{4}}-[0-9a-f]{{4}}-[0-9a-f]{{4}}-[0-9a-f]{{12}}$")
+        self.assert_neq(pattern.match(doc_id), None, 'Invalid document ID', status=st)
+
+    def assert_docs_equal(self, doc1, doc2, st=Status.MUMBLE):
+        self.assert_eq(doc1.id, doc2.id, 'Invalid document returned', status=st)
+        self.assert_eq(doc1.user, doc2.user, 'Invalid document returned', status=st)
+        self.assert_eq(doc1.content, doc2.content, 'Invalid document returned', status=st)
+        self.assert_eq(
+            doc1.created_at.ToMicroseconds(),
+            doc2.created_at.ToMicroseconds(),
+            'Invalid document returned',
+            status=st,
+        )
+
+
+if __name__ == '__main__':
+    c = Checker(sys.argv[2])
+    try:
+        c.action(sys.argv[1], *sys.argv[3:])
+    except c.get_check_finished_exception():
+        cquit(Status(c.status), c.public, c.private)
+```
+
+Ta sẽ phải tải và import các thư viện cần thiết là các thư viện được sử dụng trong quá trình thực hiện các tác vụ của checker.
+```
+random, re, string, defaultdict từ collections, google.protobuf.message, grpc, sys và checklib
+```
+
+Khai báo các biến và hàm của lớp Checker:
+- PORT: Cổng dịch vụ được sử dụng.
+- Checker: Lớp kế thừa từ BaseChecker của checklib.
+- vulns, timeout, uses_attack_data: Các thuộc tính cấu hình của checker.
+- __init__: Hàm khởi tạo kết nối tới dịch vụ thông qua Daeh5.
+
+```
+Hàm action sẽ thực hiện các hành động dựa trên tham số truyền vào. Xử lý các lỗi liên quan đến kết nối gRPC và lỗi phân tích protobuf.
+Hàm check sẽ kiểm tra tính khả dụng của dịch vụ bằng cách tạo và xác thực các tài liệu ngẫu nhiên.
+Hàm put sẽ thực hiện việc đặt cờ vào dịch vụ bằng cách tạo tài liệu chứa cờ.
+Hàm get sẽ thực hiện việc kiểm tra cờ từ dịch vụ bằng cách lấy tài liệu chứa cờ và xác thực.
+```
+
+Các hàm hỗ trợ:
+- check_doc_id: Kiểm tra định dạng của ID tài liệu.
+- assert_docs_equal: So sánh hai tài liệu để đảm bảo chúng giống nhau.
+Phần main sẽ khởi tạo checker và thực hiện hành động dựa trên tham số dòng lệnh.
+
+File checker.py này được viết để kiểm tra dịch vụ thông qua các hành động đặt và lấy Flag, đồng thời kiểm tra tính toàn vẹn của dữ liệu. Việc tổ chức và cấu hình checker theo hướng dẫn sẽ đảm bảo dịch vụ hoạt động đúng và phát hiện sớm các lỗi tiềm ẩn.
