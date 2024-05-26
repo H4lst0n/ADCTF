@@ -945,7 +945,7 @@ File checker.py này được viết để kiểm tra dịch vụ thông qua cá
 
 **Chúng ta sẽ đi tìm hiểu thư mục `scripts`, thư mục sẽ bao gồm những file sau**:
 
-> File `create_functions.sql`:
+#### 3.3.1 File `create_functions.sql`:
 ```
 CREATE OR REPLACE FUNCTION recalculate_rating(_attacker_id INTEGER, _victim_id INTEGER, _task_id INTEGER,
                                               _flag_id INTEGER)
@@ -1113,16 +1113,16 @@ Giải thích chi tiết những câu lệnh trong file:
 
 - `attacker_delta := _attacker_delta; victim_delta := _victim_delta; RETURN NEXT;`: Trả về sự thay đổi điểm số cho cả hai đội (attacker_delta và victim_delta).
 
-> File `create_tables.sql`
+#### 3.3.2 File `create_tables.sql`
 
 Có tác dụng tạo bảng trong database.
 
 ![image](https://github.com/H4lst0n/ADCTF/assets/97662987/bc1250ca-d579-44fa-844a-0bae07a943f6)
-> File `drop_query.sql`
+#### 3.3.3 File `drop_query.sql`
 
 Có tác dụng xóa bảng và những function đã tồn tại trong database.
 
-> File `init_db.py`
+#### 3.3.4 File `init_db.py`
 
 ```
 #!/usr/bin/env python3
@@ -1276,7 +1276,7 @@ File init_db.py là một script Python được sử dụng để khởi tạo 
 
 run(): Hàm chính của script. Hàm này mở file cấu hình, khởi tạo schema, khởi tạo các đội, khởi tạo các nhiệm vụ, và khởi tạo cấu hình game. Sau cùng, hàm này cập nhật trạng thái game.
 
-> File `print_tokens.py`
+#### 3.3.5 File `print_tokens.py`
 
 Đây là một script Python đơn giản được sử dụng để lấy và in ra tên và token của tất cả các đội từ cơ sở dữ liệu.
 ![image](https://github.com/H4lst0n/ADCTF/assets/97662987/66621f5d-e127-459b-97e5-2b3b40a5f303)
@@ -1355,7 +1355,7 @@ if __name__ == '__main__':
 **Chúng ta sẽ đi tìm hiểu thư mục `lib`, thư mục sẽ bao gồm những file sau**:
 ![image](https://github.com/H4lst0n/ADCTF/assets/97662987/2223c73c-316a-4be5-8041-e4e709653d4d)
 
-> File `/lib/config/models.py`
+#### 3.3.6 File `/lib/config/models.py`
 
 ```
 from typing import List
@@ -1423,7 +1423,7 @@ class Celery(BaseModel):
 
 Các lớp mô hình này sử dụng Pydantic, một thư viện Python cho phép xác thực dữ liệu và phân tích cú pháp dữ liệu phức tạp. BaseSettings là một lớp cơ sở trong Pydantic cho phép đọc cấu hình từ biến môi trường hoặc từ file cấu hình. SettingsConfigDict cho phép tùy chỉnh cách đọc cấu hình, như tiền tố cho biến môi trường.
 
-> File `/lib/config/getters.py`
+#### 3.3.7 File `/lib/config/getters.py`
 ```
 import os
 
@@ -1475,7 +1475,7 @@ def get_celery_config() -> models.Celery:
 
 - `get_celery_config() -> models.Celery`: Hàm này trả về một đối tượng Celery mới. Cấu hình này bao gồm URL của RabbitMQ Broker, URL của backend kết quả (ở đây là Redis), và múi giờ hiện tại của game.
 
-> File `/lib/flags/judge.py`
+#### 3.3.8 File `/lib/flags/judge.py`
 
 ```
 from typing import List
@@ -1528,7 +1528,7 @@ class Judge:
 
 - `def process_many(self, team_id: int, flags: List[str]) -> List[AttackResult]`: Phương thức công khai để xử lý nhiều cuộc tấn công cùng một lúc. Nó nhận vào ID của đội và một danh sách các cờ, sau đó gọi _process_attack cho mỗi cờ và trả về danh sách các kết quả.
 
-> File `/lib/flags/notifier.py`
+#### 3.3.9 File `/lib/flags/notifier.py`
 
 ```
 from logging import Logger
@@ -1586,7 +1586,7 @@ Notifier để gửi thông báo khi một cờ bị đánh cắp trong một tr
 
 - `def __call__(self) -> None`: Phương thức này được gọi khi một đối tượng Notifier được gọi như một hàm. Nó sẽ lấy một kết quả tấn công từ hàng đợi (hoặc chờ nếu hàng đợi trống) và xử lý kết quả tấn công đó.
 
-> File `/lib/helpers/checkers.py`
+#### 3.3.10 File `/lib/helpers/checkers.py`
 
 ```
 from logging import Logger
@@ -1702,7 +1702,7 @@ Lớp CheckerRunner để thực hiện các hành động kiểm tra, đặt v�
 
 - `def _get_as_process(self) -> models.CheckerVerdict`: Phương thức này tạo ra một lệnh lấy cờ và chạy nó bằng cách sử dụng run_generic_command. Nó cũng yêu cầu một cờ phải được truyền vào khi khởi tạo CheckerRunner.
 
-> File `/lib/storage/attacks.py`
+#### 3.3.11 File `/lib/storage/attacks.py`
 
 ```
 from lib import models, storage
@@ -1814,7 +1814,7 @@ def handle_attack(
   - Nếu không có ngoại lệ nào được ném ra, nó sẽ tính toán lại điểm số cho đội tấn công và nạn nhân, sau đó cập nhật kết quả tấn công.
   - Hàm handle_attack trả về một đối tượng models.AttackResult mô tả kết quả của cuộc tấn công.
 
-> File `/lib/storage/flags.py`
+#### 3.3.12 File `/lib/storage/flags.py`
 ```
 from collections import defaultdict
 from typing import Optional, List, Dict, DefaultDict, Union
@@ -2031,7 +2031,7 @@ Tất cả các hàm này đều sử dụng các hàm trợ giúp từ các mod
 
 **Chúng ta sẽ đi tìm hiểu thư mục `services`, thư mục sẽ bao gồm những file sau**:
 
-> Với thư mục `/services/admin/`
+#### 3.3.13 Với thư mục `/services/admin/`
 
 Source code sẽ có những chức năng chủ yếu như sau:
 - Thực hiện đăng nhập:
@@ -2039,7 +2039,7 @@ Source code sẽ có những chức năng chủ yếu như sau:
 - Thực hiện thay đổi và tạo, xóa Team và Task:
   ![image](https://github.com/H4lst0n/ADCTF/assets/97662987/4c1ed390-29e4-48d1-94d3-e0fe70853010)
 
-> Với thư mục `/services/api/views.py`
+#### 3.3.14 Với thư mục `/services/api/views.py`
 
 ```
 from flask import Blueprint
