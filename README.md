@@ -23,7 +23,8 @@
 
 ### 2.1.2. Build
 #### Bước 1: Setup môi trường
-- Chúng ta sẽ tiến hành build theo cách sau:
+##### YML file
+Chúng ta sẽ tiến hành build theo cách sau:
   - Đầu tiên mở file `config.yml` và sửa nó theo nội dung các services chúng ta muốn khởi chạy. Viết lại và thay thế file `config.yml.example` tác giả đã cho. Đây là nội dung của phần code.
     
     ```
@@ -105,8 +106,127 @@
         highlighted: false
     ```
     
-  - Cùng tiến hành phân tích nó. 
-(KienViet)
+Cùng tiến hành phân tích để hiểu rõ về file `yml` này.
+  
+- Phần `Game`.
+  ```
+  game:
+  mode: classic
+  round_time: 60
+  start_time: 2023-12-08 10:00:00
+  timezone: Europe/Moscow
+  default_score: 2500
+  flag_lifetime: 10
+  game_hardness: 15.0
+  inflation: true
+  ```
+Các Tham số:
+  - mode: Kiểu cuộc thi, ở đây là classic.
+  - round_time: Thời gian mỗi vòng (round) tính bằng phút, ở đây là 60 phút.
+  - start_time: Thời gian bắt đầu cuộc thi, định dạng YYYY-MM-DD HH:MM:SS.
+  - timezone: Múi giờ của thời gian bắt đầu, ở đây là Europe/Moscow.
+  - default_score: Điểm khởi đầu mặc định cho mỗi đội, ở đây là 2500 điểm.
+  - flag_lifetime: Thời gian tồn tại của flag (cờ) tính bằng phút, ở đây là 10 phút.
+  - game_hardness: Độ khó của trò chơi, giá trị ở đây là 15.0.
+  - inflation: Tùy chọn để kích hoạt lạm phát điểm số, ở đây là true.
+
+Phần Tasks (Nhiệm vụ hoặc Dịch vụ)
+  ```
+  tasks:
+  - checker: 5Go/checker.py
+    checker_timeout: 15
+    checker_type: gevent_pfr
+    gets: 1
+    name: 5Go
+    places: 1
+    puts: 1
+  - checker: kuar/checker.py
+    checker_timeout: 10
+    checker_type: gevent
+    gets: 1
+    name: kuar
+    places: 1
+    puts: 1
+  - checker: modelrna/checker.py
+    checker_timeout: 15
+    checker_type: gevent_pfr
+    gets: 1
+    name: modelrna
+    places: 1
+    puts: 1
+  - checker: sputnik_v8/checker.py
+    checker_timeout: 15
+    checker_type: gevent_pfr
+    gets: 1
+    name: sputnik_v8
+    places: 1
+    puts: 1
+  - checker: vacc_ex/checker.py
+    checker_timeout: 10
+    checker_type: gevent
+    gets: 1
+    name: vacc_ex
+    places: 1
+    puts: 1
+  - checker: virush/checker.py
+    checker_timeout: 15
+    checker_type: gevent_pfr
+    gets: 1
+    name: virush
+    places: 1
+    puts: 1
+  ```
+Các Tham số:
+  - checker: Đường dẫn tới script kiểm tra (checker script).
+  - checker_timeout: Thời gian chờ tối đa cho mỗi lần kiểm tra (tính bằng giây).
+  - checker_type: Loại checker sử dụng (gevent hoặc gevent_pfr).
+  - gets: Số lần GET yêu cầu (yêu cầu lấy cờ) mà checker thực hiện.
+  - name: Tên của nhiệm vụ hoặc dịch vụ.
+  - places: Số lần PLACE yêu cầu (yêu cầu đặt cờ) mà checker thực hiện.
+  - puts: Số lần PUT yêu cầu (yêu cầu đưa cờ) mà checker thực hiện.
+Mỗi task đại diện cho một dịch vụ mà các đội phải bảo vệ và tấn công.
+
+
+Phần Teams (Các đội tham gia)
+  ```
+  teams:
+    - ip: 10.80.0.2
+      name: Team1
+      highlighted: false
+    - ip: 10.80.1.2
+      name: Team2
+      highlighted: false
+    - ip: 10.80.2.2
+      name: Team3
+      highlighted: false
+    - ip: 10.80.3.2
+      name: Team4
+      highlighted: false
+    - ip: 10.80.4.2
+      name: Team5
+      highlighted: false
+    - ip: 10.80.5.2
+      name: Team6
+      highlighted: false
+    - ip: 10.80.6.2
+      name: Team7
+      highlighted: false
+  
+  ```
+
+Các Tham số:
+  - ip: Địa chỉ IP của đội.
+  - name: Tên của đội.
+  - highlighted: Tham số này xác định liệu đội có được làm nổi bật trong giao diện người dùng hay không. Giá trị ở đây là false cho tất cả các đội.
+
+```
+Phần game cấu hình các thông số chung cho cuộc thi như thời gian bắt đầu, thời gian mỗi vòng, và điểm số mặc định.
+Phần tasks định nghĩa các dịch vụ và kiểm tra liên quan mà các đội sẽ tương tác trong suốt cuộc thi. Mỗi dịch vụ có một script kiểm tra cụ thể với các thông số như thời gian chờ và loại kiểm tra.
+Phần teams liệt kê các đội tham gia, mỗi đội có một địa chỉ IP riêng và tên đội.
+File YML này cung cấp tất cả các thông tin cần thiết để cấu hình và chạy một cuộc thi Attack-Defend CTF sử dụng ForcAD.
+```
+
+##### Docker and library
 
 - Tiến hành cài đặt các thư viện bằng dòng lệnh  `pip3 install -r cli/requirements.txt`.
 - Các thư viện sau sẽ được cài đặt.
