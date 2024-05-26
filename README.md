@@ -274,7 +274,7 @@ Sau khi đã cài đặt thành công hệ thống của chúng ta đã được
   
 ## 3. Phân tích Source Code ForcAD
 
-### CLI
+### 3.1 CLI
 
 #### 1. CLI Control.py
 
@@ -721,7 +721,7 @@ Kết Luận
 
 Các tệp này kết hợp với nhau để tạo ra một hệ thống quản lý cấu hình mạnh mẽ và dễ dàng sử dụng thông qua CLI. Sự phân tách rõ ràng giữa các thành phần giúp mã dễ bảo trì và mở rộng, đồng thời giúp các thao tác hệ thống trở nên an toàn và hiệu quả hơn.
 
-### Checker Bot
+### 3.2. Checker Bot
 #### 1. Cấu hình Checker Bot
 
 Checksystem hoàn toàn tương thích với các checkers của Hackerdom, nhưng đã bổ sung một số cải tiến ở mức cấu hình. Các checkers được cấu hình riêng cho từng task. Nên đặt mỗi checker vào một thư mục riêng trong thư mục checkers ở thư mục gốc của dự án. Checker được xem là bao gồm tệp thực thi chính và một số tệp phụ trợ trong cùng một thư mục.
@@ -741,7 +741,7 @@ Các tùy chọn sau đây được hỗ trợ:
 Giải thích chi tiết về các tag của checker có thể được tìm thấy trong vấn đề này.
 - env_path (tùy chọn): đường dẫn hoặc kết hợp các đường dẫn được thêm vào biến môi trường PATH (ví dụ: đường dẫn tới chromedriver).
 
-#### 2 Thư mục Checkers
+#### 2. Thư mục Checkers
 Thư mục checkers ở thư mục gốc của dự án (chứa tất cả các thư mục checker) được khuyến nghị có cấu trúc như sau:
 
     ```
@@ -754,8 +754,8 @@ Thư mục checkers ở thư mục gốc của dự án (chứa tất cả các 
     ```
 
 
-#### 3. Cấu trúc một Checker cơ bản ( dựa trên 1 challenges trong services để phân tích vì file checker này sẽ được sửa dụng ở cả 2 bên là services và forcad)
-Cấu trúc thư mục Checker
+#### 3. Cấu trúc một Checker cơ bản 
+Cấu trúc thư mục Checker dựa trên 1 challenges trong services để phân tích vì file checker này sẽ được sửa dụng ở cả 2 bên là services và forcad.
 
 Thư mục checkers trong thư mục gốc của dự án chứa các thư mục riêng lẻ cho mỗi dịch vụ và tệp requirements.txt chung:
 ```
