@@ -22,7 +22,7 @@
   ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/4edd58b7-3abc-4d82-8dbf-fa4b18519644)
 
 ### 2.1.2. Build
-
+#### Bước 1: Setup môi trường
 - Chúng ta sẽ tiến hành build theo cách sau:
   - Đầu tiên mở file `config.yml` và sửa nó theo nội dung các services chúng ta muốn khởi chạy. Viết lại và thay thế file `config.yml.example` tác giả đã cho. Đây là nội dung của phần code.
     
@@ -115,5 +115,18 @@
   pydantic==2.4.2
   PyYAML==6.0.1
   ```
+  
     ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/ffcdad3c-307f-4b83-82b9-5a03afb986d6)
+
+- Docker
+  - Tại đây chúng ta sẽ phải cài phiên bản docker sát với phiên bản của ForcAD.
+    
+      ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/54007db5-9e93-4c3a-8919-0af6f3fb2fb0)
+    
+  - Tham khảo tại các link sau để tải các phiên bản docker phù hợp với phiên bản ForcAD.
+  - `https://docs.docker.com/engine/install/ubuntu/`
+  - `https://docs.docker.com/compose/install/standalone/` 
+  - `https://github.com/docker/compose/releases/tag/v2.2.3`
+    
+  #### Bước 2: Khởi chạy setup.
 
