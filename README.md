@@ -22,7 +22,7 @@ Mô hình ở đây chúng ta sẽ chia làm 2 phần:
 
 ### 2.1.2. Build
 #### Bước 1: Setup môi trường
-##### YML file
+#### YML file
 Chúng ta sẽ tiến hành build theo cách sau:
   - Đầu tiên mở file `config.yml` và sửa nó theo nội dung các services chúng ta muốn khởi chạy. Viết lại và thay thế file `config.yml.example` tác giả đã cho. Đây là nội dung của phần code.
     
@@ -228,7 +228,7 @@ Phần teams liệt kê các đội tham gia, mỗi đội có một địa ch�
 File YML này cung cấp tất cả các thông tin cần thiết để cấu hình và chạy một cuộc thi Attack-Defend CTF sử dụng ForcAD.
 ```
 
-##### Docker and library
+#### Docker and library
 
 Tiến hành cài đặt các thư viện bằng dòng lệnh  `pip3 install -r cli/requirements.txt`.
 - Các thư viện sau sẽ được cài đặt.
@@ -251,7 +251,7 @@ Tham khảo tại các link sau để tải các phiên bản docker phù hợp 
   - `https://github.com/docker/compose/releases/tag/v2.2.3`
     
 #### Bước 2: Khởi chạy hệ thống.
-##### Control.py
+#### Control.py
 Chạy file `./control.py setup` để chuẩn bị cho ForcAD config. Tại đây nó sẽ tạo 1 mk và 1 tài khoản nếu mà mình không cung cấp tài khoản `admin` và mật khẩu trong file `config.yml` nó sẽ gen ra 1 tài khoản và mật khẩu cho admin để control các services hay các team cũng như là các ip của bxh.
 - Phân tích fie `control.py` chúng ta sẽ tìm hiểu rõ trong phần sau.
 - Sau khi đã chạy file `control.py` với setup được truyền vào thì ta sẽ tiếp tục chạy nó với start để tiến hành khởi động hệ thống của mình. Chờ cho đến khi nó được build thành công có thể mất nhiều thời gian 1 chút.
@@ -272,11 +272,11 @@ Sau khi đã cài đặt thành công hệ thống của chúng ta đã được
     
     ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/e72f2acb-995b-4e71-8df1-de13a148ba0b)
   
-### 2.1.3. Phân tích Source Code
+## 3. Phân tích Source Code ForcAD
 
-#### CLI
+### CLI
 
-##### 1. Control.py
+#### 1. CLI Control.py
 
 File control.py với nội dung như sau:
 
@@ -304,7 +304,7 @@ Khởi Tạo và Quản Lý CLI: init.py tạo ra nhóm lệnh chính cli và đ
   
 Bây giờ chúng ta sẽ tiến hành phân tích chi tiết các tệp `init.py`, `constants.py`, `models.py`, `options.py`, và `utils.py`. Trước tiên, tôi sẽ mở và đọc nội dung của từng tệp này và sẽ phân tích chi tiết trực tiếp vào bên trong phần code của nó qua các dòng comment.
 
-#### 1.1. init.py
+#### 2. CLI init.py
 Tệp này thiết lập điểm vào chính cho ứng dụng CLI của bạn, sử dụng Click để quản lý các lệnh và nhóm lệnh.
 
   ```
@@ -326,7 +326,7 @@ Tệp này thiết lập điểm vào chính cho ứng dụng CLI của bạn, s
 - `base.register(cli)`: Đăng ký các lệnh từ module base vào nhóm lệnh cli.
 - `__all__`: Định nghĩa các biểu tượng sẽ được xuất khi sử dụng from module import *.
 
-##### 1.2. models.py
+#### 3. CLI models.py
 Tệp này định nghĩa các mô hình dữ liệu (data models) sử dụng Pydantic để xác thực và quản lý dữ liệu. Các mô hình này có thể đại diện cho cấu hình của trò chơi, thông tin về các đội, và các nhiệm vụ trong Attack-Defend.
 
   ```
@@ -416,7 +416,7 @@ Tệp này định nghĩa các mô hình dữ liệu (data models) sử dụng P
   
   ```
 
-##### 1.3. options.py
+#### 4. CLI options.py
 Tệp này chứa các hàm để xử lý các tùy chọn dòng lệnh bằng thư viện Click. Nó định nghĩa các tùy chọn như --fast và --workers, giúp người dùng tùy chỉnh các thông số khi chạy ứng dụng.
 
   ```
@@ -452,7 +452,7 @@ Tệp này chứa các hàm để xử lý các tùy chọn dòng lệnh bằng 
       build()
   ```
 
-##### 1.4. constants.py
+#### 5. CLI constants.py
 Tệp này định nghĩa các hằng số và đường dẫn quan trọng cho ứng dụng của bạn.
 
   ```
@@ -502,7 +502,7 @@ Tệp này định nghĩa các hằng số và đường dẫn quan trọng cho 
 - Đường dẫn và hằng số: Xác định các đường dẫn cần thiết cho cấu hình Docker, Terraform, và các bí mật.
 - Phiên bản: Đọc phiên bản của ứng dụng từ tệp .version, nếu không tồn tại thì mặc định là 'latest'.
 
-##### 1.5. utils.py
+#### 6. CLI utils.py
 Tệp này chứa các hàm tiện ích để hỗ trợ các thao tác hệ thống, quản lý tệp và in thông báo.
   ```
   import os
@@ -709,7 +709,6 @@ Tệp này chứa các hàm tiện ích để hỗ trợ các thao tác hệ th�
   ```
 
 
-
 Kết Luận
 - models.py: Định nghĩa cấu trúc dữ liệu sử dụng Pydantic để xác thực và quản lý cấu hình của trò chơi, các đội và nhiệm vụ.
 - options.py: Cung cấp các tùy chọn dòng lệnh để cấu hình và chạy ứng dụng thông qua Click.
@@ -722,9 +721,8 @@ Kết Luận
 
 Các tệp này kết hợp với nhau để tạo ra một hệ thống quản lý cấu hình mạnh mẽ và dễ dàng sử dụng thông qua CLI. Sự phân tách rõ ràng giữa các thành phần giúp mã dễ bảo trì và mở rộng, đồng thời giúp các thao tác hệ thống trở nên an toàn và hiệu quả hơn.
 
-#### 2. Checker Bot
-
-##### 2.1. Cấu hình
+### Checker Bot
+#### 1. Cấu hình Checker Bot
 
 Checksystem hoàn toàn tương thích với các checkers của Hackerdom, nhưng đã bổ sung một số cải tiến ở mức cấu hình. Các checkers được cấu hình riêng cho từng task. Nên đặt mỗi checker vào một thư mục riêng trong thư mục checkers ở thư mục gốc của dự án. Checker được xem là bao gồm tệp thực thi chính và một số tệp phụ trợ trong cùng một thư mục.
 
@@ -743,7 +741,7 @@ Các tùy chọn sau đây được hỗ trợ:
 Giải thích chi tiết về các tag của checker có thể được tìm thấy trong vấn đề này.
 - env_path (tùy chọn): đường dẫn hoặc kết hợp các đường dẫn được thêm vào biến môi trường PATH (ví dụ: đường dẫn tới chromedriver).
 
-##### 2.2. Thư mục Checkers
+#### 2 Thư mục Checkers
 Thư mục checkers ở thư mục gốc của dự án (chứa tất cả các thư mục checker) được khuyến nghị có cấu trúc như sau:
 
     ```
@@ -756,7 +754,7 @@ Thư mục checkers ở thư mục gốc của dự án (chứa tất cả các 
     ```
 
 
-##### 2.3. Cấu trúc một Checker cơ bản ( dựa trên 1 challenges trong services để phân tích vì file checker này sẽ được sửa dụng ở cả 2 bên là services và forcad)
+#### 3. Cấu trúc một Checker cơ bản ( dựa trên 1 challenges trong services để phân tích vì file checker này sẽ được sửa dụng ở cả 2 bên là services và forcad)
 Cấu trúc thư mục Checker
 
 Thư mục checkers trong thư mục gốc của dự án chứa các thư mục riêng lẻ cho mỗi dịch vụ và tệp requirements.txt chung:
