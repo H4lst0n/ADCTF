@@ -1,4 +1,4 @@
-1. Control.py
+# 1. Control.py
 
 File control.py với nội dung như sau:
 
@@ -26,7 +26,7 @@ Khởi Tạo và Quản Lý CLI: init.py tạo ra nhóm lệnh chính cli và đ
   
 Bây giờ chúng ta sẽ tiến hành phân tích chi tiết các tệp `init.py`, `constants.py`, `models.py`, `options.py`, và `utils.py`. Trước tiên, tôi sẽ mở và đọc nội dung của từng tệp này và sẽ phân tích chi tiết trực tiếp vào bên trong phần code của nó qua các dòng comment.
 
-1.1. init.py
+## 1.1. init.py
 Tệp này thiết lập điểm vào chính cho ứng dụng CLI của bạn, sử dụng Click để quản lý các lệnh và nhóm lệnh.
 
   ```
@@ -48,7 +48,7 @@ Tệp này thiết lập điểm vào chính cho ứng dụng CLI của bạn, s
 - `base.register(cli)`: Đăng ký các lệnh từ module base vào nhóm lệnh cli.
 - `__all__`: Định nghĩa các biểu tượng sẽ được xuất khi sử dụng from module import *.
 
-1.2. models.py
+## 1.2. models.py
 Tệp này định nghĩa các mô hình dữ liệu (data models) sử dụng Pydantic để xác thực và quản lý dữ liệu. Các mô hình này có thể đại diện cho cấu hình của trò chơi, thông tin về các đội, và các nhiệm vụ trong Attack-Defend.
 
   ```
@@ -138,7 +138,7 @@ Tệp này định nghĩa các mô hình dữ liệu (data models) sử dụng P
   
   ```
 
-1.3. options.py
+## 1.3. options.py
 Tệp này chứa các hàm để xử lý các tùy chọn dòng lệnh bằng thư viện Click. Nó định nghĩa các tùy chọn như --fast và --workers, giúp người dùng tùy chỉnh các thông số khi chạy ứng dụng.
 
   ```
@@ -174,103 +174,7 @@ Tệp này chứa các hàm để xử lý các tùy chọn dòng lệnh bằng 
       build()
   ```
 
-1.4. utils.py
-Tệp này chứa các hàm tiện ích để hỗ trợ việc chạy các lệnh hệ thống, quản lý tệp, và xử lý các thông báo trong ứng dụng.
-
-  ```
-  import os
-  import shutil
-  import subprocess
-  import sys
-  from pathlib import Path
-  from typing import List, Tuple
-  
-  import click
-  
-  # Hàm chạy lệnh hệ thống và kiểm tra kết quả
-  def run_command(command: List[str], cwd=None, env=None):
-      print_bold(f'Running command {command}')
-      p = subprocess.run(command, cwd=cwd, env=env)
-      if p.returncode != 0:
-          print_error(f'Command {command} failed!')
-          sys.exit(1)
-  
-  # Hàm lấy kết quả từ lệnh hệ thống
-  def get_output(command: List[str], cwd=None, env=None) -> str:
-      print_bold(f'Running command {command}')
-      return subprocess.check_output(command, cwd=cwd, env=env).decode()
-  
-  # Hàm chạy Docker với các tham số
-  def run_docker(args: List[str]):
-      base = [
-          'docker', 'compose',
-          '-f', constants.BASE_COMPOSE_FILE,
-      ]
-  
-      ctx = click.get_current_context()
-      if ctx.params.get('fast'):
-          base += ['-f', constants.FAST_COMPOSE_FILE]
-      elif os.getenv('TEST'):
-          base += ['-f', constants.TESTS_COMPOSE_FILE]
-  
-      env = os.environ.copy()
-      env['FORCAD_VERSION'] = constants.VERSION
-      run_command(
-          base + args,
-          cwd=constants.BASE_DIR,
-          env=env,
-      )
-  
-  # Hàm phân tích địa chỉ host
-  def parse_host_data(value: str, default_port: int) -> Tuple[str, int]:
-      if ':' in value:
-          host, port = value.split(':', 1)
-          port = int(port)
-          return host, port
-      return value, default_port
-  
-  # Các hàm in thông báo
-  def print_file_exception_info(_func, path, _exc_info):
-      print_bold(f'File {path} not found')
-  
-  def print_error(message: str):
-      click.secho(message, fg='red', err=True)
-  
-  def print_success(message: str):
-      click.secho(message, fg='green', err=True)
-  
-  def print_bold(message: str):
-      click.secho(message, bold=True, err=True)
-  
-  # Hàm xóa tệp
-  def remove_file(path: Path):
-      if not path.exists():
-          return
-  
-      print_bold(f'Removing file {path}')
-      if not path.is_file():
-          print_error(f'Not a file: {path}')
-          return
-  
-      try:
-          path.unlink()
-      except FileNotFoundError:
-          pass
-  
-  # Hàm xóa thư mục
-  def remove_dir(path: Path):
-      if not path.exists():
-          return
-  
-      print_bold(f'Removing directory {path}')
-      if not path.is_dir():
-          print_error(f'Not a directory: {path}')
-          return
-  
-      shutil.rmtree(path, ignore_errors=True)
-  ```
-
-1.5. constants.py
+## 1.4. constants.py
 Tệp này định nghĩa các hằng số và đường dẫn quan trọng cho ứng dụng của bạn.
 
   ```
@@ -320,8 +224,7 @@ Tệp này định nghĩa các hằng số và đường dẫn quan trọng cho 
 - Đường dẫn và hằng số: Xác định các đường dẫn cần thiết cho cấu hình Docker, Terraform, và các bí mật.
 - Phiên bản: Đọc phiên bản của ứng dụng từ tệp .version, nếu không tồn tại thì mặc định là 'latest'.
 
-
-1.6. utils.py
+## 1.5. utils.py
 Tệp này chứa các hàm tiện ích để hỗ trợ các thao tác hệ thống, quản lý tệp và in thông báo.
   ```
   import os
