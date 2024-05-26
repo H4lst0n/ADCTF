@@ -2116,7 +2116,66 @@ def health_check():
 Mỗi tuyến đường API này có thể được gọi bằng một yêu cầu HTTP GET đến URL tương ứng.
 
 
-## 4. Build Services
+### 4. Phân tích Docker Config
+#### 4.1. Phân tích file db_check.py
+
+File `db_check.py` chứa hai hàm chính: `database_check()` và `broker_check()`. Cả hai hàm này đều kiểm tra xem các dịch vụ cần thiết (cơ sở dữ liệu PostgreSQL và RabbitMQ broker) có đang hoạt động không.
+
+##### 4.1.1. database_check()
+
+Hàm này kiểm tra xem cơ sở dữ liệu PostgreSQL có thể kết nối được hay không. Nó sử dụng các biến môi trường để lấy thông tin cần thiết cho việc kết nối, bao gồm tên cơ sở dữ liệu, người dùng, mật khẩu, host và port.
+
+##### 4.1.2. broker_check()
+
+Hàm này kiểm tra xem RabbitMQ broker có thể kết nối được hay không. Nó cũng sử dụng các biến môi trường để lấy thông tin cần thiết cho việc kết nối.
+
+##### 4.1.3. Liên quan đến Docker
+
+Các biến môi trường được sử dụng trong `db_check.py` thường được đặt trong file Dockerfile hoặc docker-compose.yml khi chạy ứng dụng trong một container Docker. Điều này cho phép cấu hình dễ dàng các thông số kết nối cho các dịch vụ khác nhau.
+
+Ví dụ, trong Dockerfile, bạn có thể đặt các biến môi trường như sau:
+
+```dockerfile
+ENV POSTGRES_DB=mydatabase
+ENV POSTGRES_USER=myuser
+ENV POSTGRES_PASSWORD=mypassword
+ENV POSTGRES_HOST=db
+ENV POSTGRES_PORT=5432
+```
+
+#### 4.2. Phân tích file check_initialized.py
+
+File `check_initialized.py` kết nối đến cơ sở dữ liệu PostgreSQL và kiểm tra xem bảng `GameConfig` đã có dữ liệu hay chưa.
+
+##### 4.2.1. Kết nối đến cơ sở dữ liệu
+
+Đầu tiên, file này kết nối đến cơ sở dữ liệu PostgreSQL bằng cách sử dụng thư viện `psycopg2`. Thông tin kết nối được lấy từ các biến môi trường, bao gồm `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, và `POSTGRES_PASSWORD`.
+
+##### 4.2.2. Kiểm tra khởi tạo
+
+Sau khi kết nối, file này thực hiện truy vấn `SELECT COUNT(id) from GameConfig` để đếm số lượng bản ghi trong bảng `GameConfig`. Nếu truy vấn gặp lỗi (ví dụ: bảng `GameConfig` không tồn tại), file này sẽ kết thúc với mã lỗi 1.
+
+Nếu truy vấn thành công, file này sẽ lấy kết quả (số lượng bản ghi) và kiểm tra xem nó có bằng 0 hay không. Nếu số lượng bản ghi bằng 0 (tức là bảng `GameConfig` chưa có dữ liệu), file này sẽ kết thúc với mã lỗi 0. Ngược lại, nếu số lượng bản ghi khác 0 (tức là bảng `GameConfig` đã có dữ liệu), file này sẽ kết thúc với mã lỗi 1.
+
+
+Giống như file `db_check.py`, file `check_initialized.py` cũng sử dụng các biến môi trường để lấy thông tin kết nối đến cơ sở dữ liệu. Các biến này thường được đặt trong file Dockerfile hoặc docker-compose.yml khi chạy ứng dụng trong một container Docker.
+
+#### 4.3. Phân tích file await_start.sh
+
+File `await_start.sh` là một script shell thực hiện các bước sau:
+
+##### 4.3.1. Kiểm tra sẵn sàng của PostgreSQL và RabbitMQ
+
+Đầu tiên, script này chạy file `db_check.py` để kiểm tra xem PostgreSQL và RabbitMQ có sẵn sàng hay không. Nếu cả hai dịch vụ này chưa sẵn sàng (tức là `db_check.py` kết thúc với mã lỗi khác 0), script sẽ chờ 5 giây và kiểm tra lại. Quá trình này sẽ lặp lại cho đến khi cả hai dịch vụ đều sẵn sàng.
+
+##### 4.3.2. Kiểm tra khởi tạo cơ sở dữ liệu
+
+Sau khi PostgreSQL và RabbitMQ đã sẵn sàng, script này chạy file `check_initialized.py` để kiểm tra xem cơ sở dữ liệu đã được khởi tạo hay chưa. Nếu cơ sở dữ liệu chưa được khởi tạo (tức là `check_initialized.py` kết thúc với mã lỗi 0), script sẽ chờ 5 giây và kiểm tra lại. Quá trình này sẽ lặp lại cho đến khi cơ sở dữ liệu đã được khởi tạo.
+
+
+File `await_start.sh` thường được sử dụng trong Docker để đảm bảo rằng tất cả các dịch vụ cần thiết đều sẵn sàng và cơ sở dữ liệu đã được khởi tạo trước khi chạy ứng dụng chính. Nó thường được gọi trong file Dockerfile hoặc docker-compose.yml như một phần của lệnh `CMD` hoặc `ENTRYPOINT`.
+
+## 5. Build Services
 
 Đây là các services chúng ta sẽ build và khởi chạy nó trên server. Chúng ta sẽ dựa trên github `https://github.com/C4T-BuT-S4D/stay-home-ctf-2022/tree/master`.
 <br>
