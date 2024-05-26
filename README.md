@@ -228,7 +228,7 @@ Phần teams liệt kê các đội tham gia, mỗi đội có một địa ch�
 File YML này cung cấp tất cả các thông tin cần thiết để cấu hình và chạy một cuộc thi Attack-Defend CTF sử dụng ForcAD.
 ```
 
-#### Docker and library
+##### Docker and library
 
 Tiến hành cài đặt các thư viện bằng dòng lệnh  `pip3 install -r cli/requirements.txt`.
 - Các thư viện sau sẽ được cài đặt.
