@@ -25,6 +25,7 @@
 
 - Chúng ta sẽ tiến hành build theo cách sau:
   - Đầu tiên mở file `config.yml` và sửa nó theo nội dung các services chúng ta muốn khởi chạy. Viết lại và thay thế file `config.yml.example` tác giả đã cho. Đây là nội dung của phần code.
+    
     ```
     game:
       mode: classic
@@ -103,4 +104,5 @@
         name: Team7
         highlighted: false
     ```
-  - Cùng tiến hành phân tích nó.
+    
+  - Cùng tiến hành phân tích nó. 
