@@ -1,6 +1,6 @@
 # Build Attack-Defend
 
-## 1. Giới thiệu chung
+## I. Giới thiệu chung
 
 Attack-Defend CTF là một dạng cuộc thi bảo mật thông tin, nơi các đội không chỉ phải bảo vệ hệ thống của mình mà còn phải tấn công hệ thống của các đội khác. ForcAD hỗ trợ quản lý và điều hành các cuộc thi dạng này một cách hiệu quả, cung cấp môi trường để người tham gia có thể học hỏi và thực hành các kỹ năng bảo mật.
 
@@ -13,7 +13,7 @@ Mô hình ở đây chúng ta sẽ chia làm 2 phần:
   - Phần đầu sẽ là về "Services" có tác dụng đùng để build các challenges và checker.
   - Phần thứ hai sẽ là về "ForcAD" sử dụng để build ra bxh và hiển thị các team, các challenges cùng với ip các đội thi.
  
-## 2. Build ForcAD
+## II. Build ForcAD
 
 ### 2.1.1. ForceAD
 - Ở phần này chúng ta sẽ tiến hành phân tích code và thực hiện build ra bxh để sử dụng trong attack-defend. Follow theo đường link sau https://github.com/pomo-mondreganto/ForcAD, đây là template là chúng ta sẽ sử dụng trong hầu hết các cuộc thi Attack-Defend. Về cơ bản nó sẽ có các chức năng cho admin hoặc các user sử dụng.
@@ -272,7 +272,7 @@ Sau khi đã cài đặt thành công hệ thống của chúng ta đã được
     
     ![image](https://github.com/H4lst0n/ADCTF/assets/91616280/e72f2acb-995b-4e71-8df1-de13a148ba0b)
   
-## 3. Phân tích Source Code ForcAD
+## III. Phân tích Source Code ForcAD
 
 ### Source code chia thành 5 phần chính
 
@@ -799,13 +799,13 @@ class Checker(BaseChecker):
     timeout: int = 20
     uses_attack_data: bool = True
 
-    def __init__(self, *args, **kwargs):
-        super(Checker, self).__init__(*args, **kwargs)
+    def __init__(self, *args, kwargs):
+        super(Checker, self).__init__(*args, kwargs)
         self.d = Daeh5(f'{self.host}:{PORT}')
 
-    def action(self, action, *args, **kwargs):
+    def action(self, action, *args, kwargs):
         try:
-            super(Checker, self).action(action, *args, **kwargs)
+            super(Checker, self).action(action, *args, kwargs)
         except grpc.RpcError as e:
             if e.code() == grpc.StatusCode.UNAVAILABLE:
                 self.cquit(Status.DOWN, 'Connection error', f'Got grpc error {e.code()}: {e.details()}')
@@ -943,7 +943,7 @@ File checker.py này được viết để kiểm tra dịch vụ thông qua cá
 Để hiểu sâu hơn về phần backend chúng ta sẽ đi đến file `requirements.txt` đây là nơi chứa tất cả module cần thiết trong dự án. Để thực hiện cài đặt module ta thực hiện câu lệnh `pip install -r requirements.txt`:
 ![image](https://github.com/H4lst0n/ADCTF/assets/97662987/9d9a4d57-9e37-42b4-b391-f6e519222d39)
 
-**Chúng ta sẽ đi tìm hiểu thư mục `scripts`, thư mục sẽ bao gồm những file sau**:
+Chúng ta sẽ đi tìm hiểu thư mục `scripts`, thư mục sẽ bao gồm những file sau:
 
 #### 3.3.1 File `create_functions.sql`:
 ```
@@ -1156,7 +1156,7 @@ def init_teams(config, curs):
 
     for team_conf in config:
         team_token = models.Team.generate_token()
-        team = models.Team(id=None, **team_conf, token=team_token)
+        team = models.Team(id=None, team_conf, token=team_token)
         team.insert(curs)
         teams.append(team)
 
@@ -1183,7 +1183,7 @@ def init_tasks(config, game_config, curs):
             task_conf['checker'],
         )
 
-        task = models.Task(id=None, **task_conf)
+        task = models.Task(id=None, task_conf)
         task.insert(curs)
         tasks.append(task)
 
@@ -1205,7 +1205,7 @@ def init_game_config(game_config, curs):
     # noinspection PyArgumentList
     game_config['mode'] = models.GameMode(game_config['mode'])
 
-    game_config = models.GameConfig(id=None, **game_config)
+    game_config = models.GameConfig(id=None, game_config)
     game_config.insert(curs)
 
 
@@ -1352,7 +1352,7 @@ if __name__ == '__main__':
 
 11. `storage.utils.RedisStorage.get().flushall()`: Xóa tất cả dữ liệu từ Redis. Nếu Redis không chạy, một ngoại lệ sẽ được ném ra và script sẽ chờ 5 giây trước khi thử lại.
 
-**Chúng ta sẽ đi tìm hiểu thư mục `lib`, thư mục sẽ bao gồm những file sau**:
+Chúng ta sẽ đi tìm hiểu thư mục `lib`, thư mục sẽ bao gồm những file sau:
 ![image](https://github.com/H4lst0n/ADCTF/assets/97662987/2223c73c-316a-4be5-8041-e4e709653d4d)
 
 #### 3.3.6 File `/lib/config/models.py`
@@ -2029,7 +2029,7 @@ def get_attack_data(
 
 Tất cả các hàm này đều sử dụng các hàm trợ giúp từ các module khác như models, cache_helper, caching, game, và utils để thực hiện các tác vụ cụ thể như truy vấn cơ sở dữ liệu, làm việc với bộ nhớ cache, và xử lý các mô hình dữ liệu.
 
-**Chúng ta sẽ đi tìm hiểu thư mục `services`, thư mục sẽ bao gồm những file sau**:
+Chúng ta sẽ đi tìm hiểu thư mục `services`, thư mục sẽ bao gồm những file sau:
 
 #### 3.3.13 Với thư mục `/services/admin/`
 
@@ -2116,20 +2116,20 @@ def health_check():
 Mỗi tuyến đường API này có thể được gọi bằng một yêu cầu HTTP GET đến URL tương ứng.
 
 
-### 4. Phân tích Docker Config
-#### 4.1. Phân tích file db_check.py
+### 3.4. Phân tích Docker Config
+#### 3.4.1. Phân tích file db_check.py
 
 File `db_check.py` chứa hai hàm chính: `database_check()` và `broker_check()`. Cả hai hàm này đều kiểm tra xem các dịch vụ cần thiết (cơ sở dữ liệu PostgreSQL và RabbitMQ broker) có đang hoạt động không.
 
-##### 4.1.1. database_check()
+##### 3.4.1.1 database_check()
 
 Hàm này kiểm tra xem cơ sở dữ liệu PostgreSQL có thể kết nối được hay không. Nó sử dụng các biến môi trường để lấy thông tin cần thiết cho việc kết nối, bao gồm tên cơ sở dữ liệu, người dùng, mật khẩu, host và port.
 
-##### 4.1.2. broker_check()
+##### 3.4.1.2. broker_check()
 
 Hàm này kiểm tra xem RabbitMQ broker có thể kết nối được hay không. Nó cũng sử dụng các biến môi trường để lấy thông tin cần thiết cho việc kết nối.
 
-##### 4.1.3. Liên quan đến Docker
+##### 3.4.1.3. Liên quan đến Docker
 
 Các biến môi trường được sử dụng trong `db_check.py` thường được đặt trong file Dockerfile hoặc docker-compose.yml khi chạy ứng dụng trong một container Docker. Điều này cho phép cấu hình dễ dàng các thông số kết nối cho các dịch vụ khác nhau.
 
@@ -2143,15 +2143,15 @@ ENV POSTGRES_HOST=db
 ENV POSTGRES_PORT=5432
 ```
 
-#### 4.2. Phân tích file check_initialized.py
+#### 3.4.2. Phân tích file check_initialized.py
 
 File `check_initialized.py` kết nối đến cơ sở dữ liệu PostgreSQL và kiểm tra xem bảng `GameConfig` đã có dữ liệu hay chưa.
 
-##### 4.2.1. Kết nối đến cơ sở dữ liệu
+##### 3.4.2.1. Kết nối đến cơ sở dữ liệu
 
 Đầu tiên, file này kết nối đến cơ sở dữ liệu PostgreSQL bằng cách sử dụng thư viện `psycopg2`. Thông tin kết nối được lấy từ các biến môi trường, bao gồm `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, và `POSTGRES_PASSWORD`.
 
-##### 4.2.2. Kiểm tra khởi tạo
+##### 3.4.2.2. Kiểm tra khởi tạo
 
 Sau khi kết nối, file này thực hiện truy vấn `SELECT COUNT(id) from GameConfig` để đếm số lượng bản ghi trong bảng `GameConfig`. Nếu truy vấn gặp lỗi (ví dụ: bảng `GameConfig` không tồn tại), file này sẽ kết thúc với mã lỗi 1.
 
@@ -2160,22 +2160,22 @@ Nếu truy vấn thành công, file này sẽ lấy kết quả (số lượng b
 
 Giống như file `db_check.py`, file `check_initialized.py` cũng sử dụng các biến môi trường để lấy thông tin kết nối đến cơ sở dữ liệu. Các biến này thường được đặt trong file Dockerfile hoặc docker-compose.yml khi chạy ứng dụng trong một container Docker.
 
-#### 4.3. Phân tích file await_start.sh
+#### 3.4.3. Phân tích file await_start.sh
 
 File `await_start.sh` là một script shell thực hiện các bước sau:
 
-##### 4.3.1. Kiểm tra sẵn sàng của PostgreSQL và RabbitMQ
+##### 3.4.3.1. Kiểm tra sẵn sàng của PostgreSQL và RabbitMQ
 
 Đầu tiên, script này chạy file `db_check.py` để kiểm tra xem PostgreSQL và RabbitMQ có sẵn sàng hay không. Nếu cả hai dịch vụ này chưa sẵn sàng (tức là `db_check.py` kết thúc với mã lỗi khác 0), script sẽ chờ 5 giây và kiểm tra lại. Quá trình này sẽ lặp lại cho đến khi cả hai dịch vụ đều sẵn sàng.
 
-##### 4.3.2. Kiểm tra khởi tạo cơ sở dữ liệu
+##### 3.4.3.2. Kiểm tra khởi tạo cơ sở dữ liệu
 
 Sau khi PostgreSQL và RabbitMQ đã sẵn sàng, script này chạy file `check_initialized.py` để kiểm tra xem cơ sở dữ liệu đã được khởi tạo hay chưa. Nếu cơ sở dữ liệu chưa được khởi tạo (tức là `check_initialized.py` kết thúc với mã lỗi 0), script sẽ chờ 5 giây và kiểm tra lại. Quá trình này sẽ lặp lại cho đến khi cơ sở dữ liệu đã được khởi tạo.
 
 
 File `await_start.sh` thường được sử dụng trong Docker để đảm bảo rằng tất cả các dịch vụ cần thiết đều sẵn sàng và cơ sở dữ liệu đã được khởi tạo trước khi chạy ứng dụng chính. Nó thường được gọi trong file Dockerfile hoặc docker-compose.yml như một phần của lệnh `CMD` hoặc `ENTRYPOINT`.
 
-## 5. Build Services
+## IV. Build Services
 
 Đây là các services chúng ta sẽ build và khởi chạy nó trên server. Chúng ta sẽ dựa trên github `https://github.com/C4T-BuT-S4D/stay-home-ctf-2022/tree/master`.
 <br>
@@ -2184,12 +2184,12 @@ File `await_start.sh` thường được sử dụng trong Docker để đảm b
 <br>
 | Service | Language | Checker | Sploits | Authors |
 |---------|----------|---------|---------|---------|
-| **[5Go](services/5Go/)** | Rust & Go | [Checker](checkers/5Go/) | [Sploits](sploits/5Go/) | [@pomo_mondreganto](https://github.com/pomo-mondreganto) |
-| **[kuar](services/kuar/)** | C++ | [Checker](checkers/kuar/) | [Sploits](sploits/kuar/) | [@revker](https://github.com/revervand) |
-| **[modelrna](services/modelrna/)** | Python | [Checker](checkers/modelrna/) | [Sploits](sploits/modelrna/) | [@jnovikov](https://github.com/jnovikov) |
-| **[sputnik_v8](services/sputnik_v8/)** | NodeJS | [Checker](checkers/sputnik_v8/) | [Sploits](sploits/sputnik_v8/) | [@iwalainz](https://github.com/iwalainz) |
-| **[vacc_ex](services/vacc_ex/)** | Java | [Checker](checkers/vacc_ex/) | [Sploits](sploits/vacc_ex/) | [@jnovikov](https://github.com/jnovikov) & [@iwalainz](https://github.com/iwalainz) |
-| **[virush](services/virush/)** | Bash | [Checker](checkers/virush/) | [Sploits](sploits/virush/) | [@keltecc](https://github.com/keltecc) |
+| [5Go](services/5Go/) | Rust & Go | [Checker](checkers/5Go/) | [Sploits](sploits/5Go/) | [@pomo_mondreganto](https://github.com/pomo-mondreganto) |
+| [kuar](services/kuar/) | C++ | [Checker](checkers/kuar/) | [Sploits](sploits/kuar/) | [@revker](https://github.com/revervand) |
+| [modelrna](services/modelrna/) | Python | [Checker](checkers/modelrna/) | [Sploits](sploits/modelrna/) | [@jnovikov](https://github.com/jnovikov) |
+| [sputnik_v8](services/sputnik_v8/) | NodeJS | [Checker](checkers/sputnik_v8/) | [Sploits](sploits/sputnik_v8/) | [@iwalainz](https://github.com/iwalainz) |
+| [vacc_ex](services/vacc_ex/) | Java | [Checker](checkers/vacc_ex/) | [Sploits](sploits/vacc_ex/) | [@jnovikov](https://github.com/jnovikov) & [@iwalainz](https://github.com/iwalainz) |
+| [virush](services/virush/) | Bash | [Checker](checkers/virush/) | [Sploits](sploits/virush/) | [@keltecc](https://github.com/keltecc) |
 
 
 
